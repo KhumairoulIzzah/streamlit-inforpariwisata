@@ -68,8 +68,8 @@ if 'label' in df_akhir.columns:
     st.pyplot(fig)
 
     # Simpan model
-    joblib.dump(model, "naive_bayes_model.joblib")
-    st.success("Model disimpan sebagai naive_bayes_model.joblib")
+    joblib.dump(model, "model_nb.joblib")
+    st.success("Model disimpan sebagai model_nb.joblib")
 
 else:
     st.warning("Kolom 'label' tidak ditemukan pada dataset TF-IDF. Tidak bisa melakukan pelatihan model.")
