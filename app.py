@@ -32,8 +32,8 @@ st.dataframe(df_tfidf.iloc[:, -10:].head())  # Menampilkan 10 kolom terakhir (fi
 if 'label' in df_akhir.columns:
     st.header("4. Pelatihan dan Evaluasi Model Naive Bayes")
 
-    X = df_tfidf.drop(columns=["date", "snippet"], errors='ignore')
-    y = df_tfidf['label']
+    X = df_akhir.drop(columns=["date", "snippet"], errors='ignore')
+    y = df_akhir['label']
 
     # Encode label jika perlu
     if y.dtype == 'object':
