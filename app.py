@@ -28,48 +28,22 @@ st.dataframe(df_preprocessed[['snippet', 'text_clean', 'case_folding', 'tokenize
 st.header("3. Hasil TF-IDF")
 st.dataframe(df_tfidf.iloc[:, -10:].head())  # Menampilkan 10 kolom terakhir (fitur tf-idf)
 
-# Cek jika ada label untuk klasifikasi
+# sentimen
 if 'label' in df_akhir.columns:
-    st.header("4. Pelatihan dan Evaluasi Model Naive Bayes")
+    st.header("4. Hasil Sentimen Ulasan")
 
-    X = df_akhir.drop(columns=["date", "snippet"], errors='ignore')
-    y = df_akhir['label']
+    label_counts = df_akhir['label'].value_counts()
+    st.write("Jumlah masing-masing sentimen:")
+    st.bar_chart(label_counts)
 
-    # Encode label jika perlu
-    if y.dtype == 'object':
-        le = LabelEncoder()
-        y = le.fit_transform(y)
-
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    # Latih model
-    model = MultinomialNB()
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-
-    # Evaluasi
-    st.subheader("Classification Report")
-    st.text(classification_report(y_test, y_pred))
-
-    # Akurasi
-    accuracy = accuracy_score(y_test, y_pred)
-    st.subheader("Akurasi")
-    st.write(f"{accuracy:.2f}")
-
-    # Confusion Matrix
-    cm = confusion_matrix(y_test, y_pred)
-    st.subheader("Confusion Matrix")
-
-    fig, ax = plt.subplots()
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax)
-    ax.set_xlabel('Predicted Label')
-    ax.set_ylabel('True Label')
-    st.pyplot(fig)
-
-    # Simpan model
-    joblib.dump(model, "model_nb.joblib")
-    st.success("Model disimpan sebagai model_nb.joblib")
-
+    for label, count in label_counts.items():
+        st.write(f"- **{label.capitalize()}**: {count} ulasan")
 else:
-    st.warning("Kolom 'label' tidak ditemukan pada dataset TF-IDF. Tidak bisa melakukan pelatihan model.")
+    st.warning("Kolom 'label' tidak ditemukan pada hasil_akhir.csv.")
+
+# 5. Tampilkan Snippet dan Label
+st.header("5. Daftar Ulasan dan Label Sentimen")
+if all(col in df_akhir.columns for col in ['snippet', 'label']):
+    st.dataframe(df_akhir[['snippet', 'label']].head(20))  # Tampilkan 20 data pertama
+else:
+    st.warning("Kolom 'snippet' dan/atau 'label' tidak ditemukan.")
